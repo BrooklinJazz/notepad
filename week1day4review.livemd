@@ -1,0 +1,258 @@
+# Week 1 Day 4
+
+## Section
+
+```mermaid
+flowchart LR
+Input --> BlackBox --> Output
+BlackBox --> SideEffect
+Currency --> calculate_tax/1 --> CurrencyWithTaxApplied
+```
+
+```elixir
+calculate_tax = fn currency ->
+  currency * 1.14
+end
+
+order_total = 1000
+
+order_total_tax_applied = calculate_tax.(order_total)
+
+order_total_tax_applied
+```
+
+```elixir
+Enum.map([1, 2, 3], fn integer ->
+  IO.puts("I was called with #{integer}")
+  integer * 2
+end)
+```
+
+```elixir
+defmodule Order do
+  def build_shopping_cart() do
+  end
+
+  def calculate_order_total(shopping_cart) do
+    calculate_tax = fn currency -> nil end
+  end
+
+  # def calculate_tax(order_total) do
+
+  # end
+end
+```
+
+## callback functions
+
+```elixir
+call_with_20 = fn callback -> callback.(20) end
+
+call_with_20.(fn twenty -> IO.puts("I was called with #{twenty}") end)
+```
+
+Walk through the evaluation.
+
+```elixir
+wrap_with_print = fn callback ->
+  """
+  ==========
+  #{callback.()}
+  ==========
+  """
+
+  # IO.puts("==========")
+  # IO.inspect(callback.())
+  # IO.puts("==========")
+end
+
+wrap_with_print.(fn -> 20 ** 3 end) |> IO.puts()
+```
+
+## Modules
+
+I'm being not specific enough with the diff between "namespace" and "submodule"
+
+```elixir
+defmodule Greeter do
+  def hello do
+    Greeter.English.hello()
+  end
+end
+
+defmodule Greeter.English do
+  def hello do
+    "hello"
+  end
+
+  def parent do
+    Greeter.hello()
+  end
+end
+
+defmodule Greeter.Spanish do
+  def hello do
+    "hola"
+  end
+end
+
+Greeter.hello()
+```
+
+## Module Attributes
+
+```elixir
+defmodule Constants do
+  @tax_amount 1 + 0.06 + 0.08
+
+  def tax_amount do
+    @tax_amount
+  end
+
+  def calculate_tax(order_total) do
+    @tax_amount * order_total
+  end
+
+  def calculate_import_tax(order_total) do
+    @tax_amount * order_total + 10
+  end
+end
+
+Constants.tax_amount()
+```
+
+## Control Flow
+
+If statements: 2 branching paths
+
+```elixir
+temperature = 20
+
+if temperature < 5 do
+  "coat"
+else
+  "t-shirt"
+end
+```
+
+case statements: many branching paths with pattern matching on multiple cases
+
+```elixir
+:sunny = {:sunny, 20}
+
+temperature
+```
+
+```elixir
+1..finish = 1..20
+
+finish
+```
+
+```elixir
+# {:sunny, 20} = {:sunny, 20}
+# {:sunny, temperature} = {:sunny, 20}
+
+# temperature
+```
+
+```elixir
+{:sunny, t} = {:sunny, 20}
+
+t
+```
+
+```elixir
+conditions = {:sunny, 10}
+
+recommendation =
+  case {:sunny, 10} do
+    {:sunny, 20} -> "t-shirt!"
+    {:sunny, temperature} -> "t-shirt It's #{temperature} degrees out!"
+    :rainy -> "raincoat1"
+    :foggy -> "bright shirt"
+    _weather -> "atleast wear something!"
+  end
+
+"wear a #{recommendation}!"
+```
+
+```elixir
+weather = :rainy
+temperature = 20
+
+recommendation =
+  case weather do
+    :sunny -> "t-shirt"
+    :rainy -> "raincoat1"
+    :foggy -> "bright shirt"
+    _weather -> "atleast wear something!"
+  end
+
+cond do
+  is_integer(temperature) -> "something"
+  weather == :sunny and temperature > 10 -> "t-shirt"
+  weather == :rainy -> "raincoat"
+  weather == :foggy -> "bright shirt"
+  true -> "atleast wear something!"
+end
+
+"wear a #{recommendation}!"
+
+# come back and solve this with cond
+```
+
+cond statements: many branching paths with complex conditions that do not work well with pattern matching.
+
+```elixir
+# A
+85..100
+# B
+70..84
+# C
+55..69
+# D
+1..54
+
+grade = "oops"
+
+# case grade do
+#   87 -> "A"
+#   86 -> "A"
+#   85 -> "A"
+# end
+
+cond do
+  100 <= grade -> raise "OUT OF RANGE!"
+  85 <= grade -> "A"
+  70 <= grade -> "B"
+  55 <= grade -> "C"
+  1 <= grade -> "D"
+  grade <= 0 -> raise "OUT OF RANGE"
+end
+```
+
+If I have two values I want to compare, and I don't care about order.
+
+```elixir
+value1 = :rock
+value2 = :paper
+
+if (value1 == :rock and value2 == :paper) or (value1 == :paper and value2 == :rock) do
+  "true"
+end
+
+Enum.sort([value1, value2]) == [:paper, :rock]
+
+case {value1, value2} do
+  {:rock, :paper} -> ""
+  {:paper, :rock} -> ""
+end
+```
+
+```elixir
+value1 = :paper
+value2 = :rock
+
+Enum.sort([value1, value2]) == Enum.sort([:paper, :rock])
+```

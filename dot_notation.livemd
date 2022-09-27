@@ -1,0 +1,103 @@
+# Function Dot Notation
+
+## Section
+
+```elixir
+defmodule Parent.Child1.Child2 do
+  def callback(function, parameter) do
+    function.(parameter)
+  end
+
+  def hello(name) do
+    "Hello #{name}!"
+  end
+
+  def my_function do
+    1
+  end
+end
+
+:atom
+
+[right: 1]
+
+[{:left, 1}]
+```
+
+```elixir
+defmodule Test do
+  def function(opts) do
+    IO.inspect(opts)
+  end
+end
+
+Test.function([{:right, 1}])
+
+# keyword lists
+[{:key, "value"}] == [key: "value"]
+
+# Encourage Idiomatic Use/ Provide Syntax Sugar
+# Safe Data/Trusted Data
+%{
+  key: "value"
+}
+
+# not trusted
+%{
+  "key" => "value"
+}
+
+%{
+  :key => "value"
+}
+```
+
+```elixir
+defmodule Test do
+  def hello(name) do
+    "Hello #{name}!"
+  end
+end
+
+Test.hello("Bill!") |> IO.inspect()
+Test.hello("Zeshhaan!") |> IO.inspect()
+Test.hello("Icia!") |> IO.inspect()
+Test.hello(2) |> IO.inspect()
+Test.hello(3) |> IO.inspect()
+Test.hello(4) |> IO.inspect()
+```
+
+```elixir
+"Concatenation" <> " Hello!"
+
+name = "4"
+my_weird_string = "Interpolation #{[73, 74]}"
+
+my_weird_string <> "Bob"
+```
+
+```elixir
+'IJ'
+```
+
+```elixir
+10
+
+?z
+```
+
+```elixir
+?A..?z
+```
+
+```elixir
+
+```
+
+```elixir
+'ABC' == [65, 66, 67]
+```
+
+```elixir
+"ABC" == [65, 66, 67]
+```

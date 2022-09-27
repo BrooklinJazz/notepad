@@ -1,0 +1,97 @@
+# Control Flow
+
+## Section
+
+`if`s are for `1` or `2` branching paths only.
+
+```elixir
+is_admin = true
+owns_blog = true
+is_published = true
+
+can_create_blog = is_admin and owns_blog and is_published
+
+# BAD, do not nest ifs.
+if is_admin do
+  if owns_blog do
+    if is_published do
+      "CREATE THE BLOG"
+    else
+      "BLOG MUST BE PUBLISHED"
+    end
+  else
+    "YOU DON'T OWN THIS"
+  end
+else
+  "NOT ADMIN"
+end
+
+if can_create_blog do
+  "Create the blog"
+else
+  "Sorry not authorized"
+end
+```
+
+Case can handle many branching paths, that work well with pattern matching.
+
+```elixir
+# weather = :sunny
+# weather = :rainy
+weather = :foggy
+
+case weather do
+  :sunny -> "Wear a t-shirt"
+  :rainy -> "Wear a raincoat"
+  :foggy -> "Wear a long sleave"
+end
+```
+
+```elixir
+# names = ["Brooklin"]
+names = ["Brooklin", "Drew", "Bill"]
+
+case names do
+  [] -> "Where is everyone?"
+  ["Drew"] -> "Hello Drew"
+  [name] -> "Hello #{name}"
+  [name1, name2] -> "Hello #{name1}, Hi #{name2}"
+  _names -> "Hello everyone!"
+end
+
+# case [1, 2, 3] do
+#   true -> "TRUE"
+# end
+```
+
+cond is best for multiple branching paths that are not well suited for pattern matching.
+
+```elixir
+grade = 70
+
+# A 86..100
+# B 72..85
+# C 50..71
+
+cond do
+  grade >= 86 and grade <= 100 -> "A"
+  grade >= 72 and grade <= 85 -> "B"
+  grade >= 50 and grade <= 71 -> "C"
+end
+
+# an example where cond is not a great solution.
+cond do
+  names == [] -> "Where is everyone?"
+  length(names) == 1 -> "Hello #{hd(names)}"
+  length(names) == 2 -> "Hello #{Enum.at(names, 0)}, Hi #{Enum.at(names, 1)}"
+  true -> "Hello everyone!"
+end
+```
+
+```elixir
+[a, b, c] = [1, 2, 3]
+```
+
+```elixir
+
+```

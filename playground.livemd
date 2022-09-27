@@ -1,0 +1,17 @@
+# Playground
+
+## Section
+
+```elixir
+2 + 2
+```
+
+```elixir
+defmodule Example do
+  def hello() do
+    "HI"
+  end
+end
+
+Example.hello()
+```

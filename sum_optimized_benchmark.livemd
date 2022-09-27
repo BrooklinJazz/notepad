@@ -1,0 +1,72 @@
+# Sum Optimized
+
+```elixir
+Mix.install([
+  {:benchee, "~> 1.1"}
+])
+```
+
+## Section
+
+```elixir
+defmodule ListSum do
+  def sum([]), do: 0
+  def sum([head | tail]), do: head + sum(tail)
+
+  def sum_optimized(list, accumulator \\ 0)
+  def sum_optimized([], accumulator), do: accumulator
+  def sum_optimized([head | tail], accumulator), do: sum_optimized(tail, head + accumulator)
+end
+
+Benchee.run(
+  %{
+    "sum" => fn input -> ListSum.sum(input) end,
+    "sum_optimized" => fn input -> ListSum.sum_optimized(input) end,
+    "control" => fn input -> Enum.sum(input) end
+  },
+  inputs: %{
+    "large" => Enum.to_list(1..1_000_000),
+    "medium" => Enum.to_list(1..10000),
+    "small" => Enum.to_list(1..100)
+  },
+  time: 10,
+  memory_time: 2
+)
+```
+
+Operating System: Linux
+CPU Information: Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz
+Number of Available Cores: 8
+Available memory: 11.61 GB
+Elixir 1.13.3
+Erlang 24.3
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 10 s
+memory time: 2 s
+reduction time: 0 ns
+parallel: 8
+inputs: list
+Estimated total run time: 28 s
+
+Benchmarking sum with input list ...
+Benchmarking sum_optimized with input list ...
+
+##### With input list
+
+Name                    ips        average  deviation         median         99th %
+sum_optimized        984.70        1.02 ms    ±41.07%        0.94 ms        2.80 ms
+sum                  299.00        3.34 ms    ±29.06%        3.08 ms        7.56 ms
+
+Comparison: 
+sum_optimized        984.70
+sum                  299.00 - 3.29x slower +2.33 ms
+
+Memory usage statistics:
+
+Name             Memory usage
+sum_optimized           600 B
+sum                     600 B - 1.00x memory usage +0 B
+
+**All measurements for memory usage were the same**

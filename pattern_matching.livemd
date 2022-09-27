@@ -1,0 +1,71 @@
+# Untitled notebook
+
+## Section
+
+```elixir
+# input
+list = [1, 2, 3]
+# output: [2, 4, 6] 
+
+Enum.map(list, fn element -> element * 2 end)
+
+list
+```
+
+```elixir
+list = [1, 2, 3]
+
+my_function = fn ->
+  list = [4, 5, 6]
+
+  list
+end
+
+# my_function.()
+
+# list
+
+list = [4, 5, 6]
+
+list
+```
+
+Pattern Matching
+
+```elixir
+[a, b, c | _tail] = Enum.to_list(1..100)
+
+c
+```
+
+```elixir
+names = ["Jon", "Bill"]
+
+case names do
+  [] -> "Where is everyone?"
+  [name] -> "Hello #{name}!"
+  names -> "Hello Everyone!"
+end
+```
+
+```elixir
+defmodule Greeting do
+  def hello([] = names) do
+    "Where is everyone?"
+  end
+
+  def hello([name] = names) do
+    "Hello #{name}"
+  end
+
+  def hello([name1, name2, name3] = names) do
+    "Hello #{name1}, Hi #{name2}, Heya #{name3}"
+  end
+
+  def hello(_names = names) do
+    "Hey Everyone"
+  end
+end
+
+Greeting.hello([""])
+```
