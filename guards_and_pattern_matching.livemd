@@ -1,0 +1,93 @@
+# Guards and Pattern Matching
+
+## Polymorphism
+
+```elixir
+map = %{key1: "value", key2: "value"}
+list = [1, 2, 3]
+
+Enum.reduce(map, 0, fn each, acc ->
+  IO.inspect(each)
+end)
+```
+
+```elixir
+Enum.reduce("hello", 0, fn each, acc ->
+  IO.inspect(each)
+end)
+```
+
+```elixir
+# double integer -> integer
+# Integer.to_string integer -> string
+```
+
+```elixir
+defmodule Greeter do
+  def hello([name1, name2]) do
+    "Hello #{name1} and #{name2}"
+  end
+
+  def hello([name1]) do
+    "Hello #{name1}"
+  end
+
+  def hello(_) do
+    "Hello everyone!"
+  end
+end
+```
+
+```elixir
+defmodule FireWaterGrass do
+  defstruct [:name]
+  def play(:fire, :water), do: "water beats fire"
+  def play(:fire, :grass), do: "fire beats grass"
+  def play(guess1, guess2), do: "Draw!"
+end
+```
+
+```elixir
+
+```
+
+```elixir
+defmodule Money do
+  def add({type, amount1}, amount2) do
+    {type, amount1 + amount2}
+  end
+
+  def add(amount1, amount2) do
+    amount1 + amount2
+  end
+end
+
+cad = {:CAD, 10}
+us = {:US, 10}
+
+Money.add(cad, 10)
+Money.add(cad, 10)
+```
+
+## With
+
+```elixir
+sender = %{email: "Jon@mail.com"}
+receiver = %{email: "Drew@mail.com"}
+
+case sender do
+  %{email: sender_email} ->
+    case receiver do
+      %{email: receiver_email} ->
+        "FROM: #{sender_email} TO: #{receiver_email}"
+    end
+end
+
+# %{email: sender_email} = sender
+
+with %{email: sender_email} <- sender, %{email: receiver_email} <- receiver do
+  "FROM: #{sender_email} TO: #{receiver_email}"
+end
+```
+
+

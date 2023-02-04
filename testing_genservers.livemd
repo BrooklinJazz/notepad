@@ -1,0 +1,220 @@
+# Testing GenServers
+
+## Section
+
+```elixir
+[head | tail] = []
+```
+
+```elixir
+[] ++ ["hello"]
+```
+
+```elixir
+opts = [initial_state: ["one", "two"], name: :example]
+{value, opts} = Keyword.pop(opts, :name, :my_module)
+```
+
+```elixir
+defmodule TodoList do
+  use GenServer
+
+  def start_link(opts) do
+    name = Keyword.pop(opts, :name, __MODULE__) |> IO.inspect()
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  end
+
+  def add(pid, todo_item) do
+    GenServer.call(pid, {:add_item, todo_item})
+  end
+
+  def complete_next(pid) do
+    GenServer.call(pid, :complete_item)
+  end
+
+  def init(opts) do
+    {:ok, opts}
+  end
+
+  def handle_call({:add_item, todo_item}, _from, state) do
+    next_state = state ++ [todo_item]
+    {:reply, :ok, next_state}
+  end
+
+  def handle_call(:complete_item, _from, []) do
+    {:reply, nil, []}
+  end
+
+  def handle_call(:complete_item, _from, state) do
+    [head | tail] = state
+    {:reply, head, tail}
+  end
+end
+```
+
+```elixir
+TodoList.start_link([])
+```
+
+```elixir
+ExUnit.start(auto_run: false)
+
+defmodule GenServerTest1 do
+  use ExUnit.Case, async: true
+
+  test "start_link/1" do
+    assert {:ok, pid} = TodoList.start_link([])
+  end
+
+  test "add/2" do
+    assert {:ok, pid} = TodoList.start_link([])
+    assert :ok = TodoList.add(pid, "one")
+    assert :ok = TodoList.add(pid, "two")
+    assert TodoList.complete_next(pid) == "one"
+    assert TodoList.complete_next(pid) == "two"
+  end
+end
+
+defmodule GenServerTest2 do
+  use ExUnit.Case, async: true
+
+  test "start_link/1" do
+    assert {:ok, pid} = TodoList.start_link([])
+  end
+
+  test "add/2" do
+    assert {:ok, pid} = TodoList.start_link([])
+    assert :ok = TodoList.add(pid, "one")
+    assert :ok = TodoList.add(pid, "two")
+    assert TodoList.complete_next(pid) == "one"
+    assert TodoList.complete_next(pid) == "two"
+  end
+
+  test "complete_next/1" do
+    assert {:ok, pid} = TodoList.start_link(["one", "two"])
+    assert TodoList.complete_next(pid) == "one"
+    assert TodoList.complete_next(pid) == "two"
+    assert TodoList.complete_next(pid) == nil
+  end
+
+  # test "handle_cast :add implementation" do
+  #   assert {:ok, pid} = GenServer.start_link(TodoList, [])
+  #   assert :ok = GenServer.cast(pid, {:add, "one"})
+  #   assert :ok = GenServer.cast(pid, {:add, "two"})
+  #   assert :sys.get_state(pid) == ["one", "two"]
+  # end
+
+  # test "handle_call :complete implementation" do
+  #   assert {:ok, pid} = GenServer.start_link(TodoList, [])
+  #   assert :ok = GenServer.cast(pid, {:add, "one"})
+  #   assert :ok = GenServer.cast(pid, {:add, "two"})
+
+  #   assert :sys.get_state(pid) == ["one", "two"]
+  #   assert GenServer.call(pid, :complete) == "one"
+
+  #   assert :sys.get_state(pid) == ["two"]
+  #   assert GenServer.call(pid, :complete) == "two"
+
+  #   assert :sys.get_state(pid) == []
+  #   assert GenServer.call(pid, :complete) == nil
+  # end
+end
+
+ExUnit.run()
+```
+
+```elixir
+state = []
+[head | tail] = state
+```
+
+```elixir
+defmodule TodoList do
+  use GenServer
+
+  def start_link(opts) do
+    name = Keyword.get(opts, :name, __MODULE__)
+    GenServer.start_link(__MODULE__, [], name: name)
+  end
+
+  def add(pid, todo_item) do
+    GenServer.call(pid, {:add_item, todo_item})
+  end
+
+  def complete_next(pid) do
+    GenServer.call(pid, :complete_item)
+  end
+
+  @impl true
+  def init(_opts) do
+    {:ok, []}
+  end
+
+  @impl true
+  def handle_call({:add_item, todo_item}, _from, state) do
+    {:reply, :ok, state ++ [todo_item]}
+  end
+
+  @impl true
+  def handle_call(:complete_item, _from, []) do
+    {:reply, nil, []}
+  end
+
+  @impl true
+  def handle_call(:complete_item, _from, state) do
+    [head | tail] = state
+    {:reply, head, tail}
+  end
+end
+```
+
+```elixir
+pid = Process.whereis(:example_name)
+
+unless Process.alive?(pid) do
+  TodoList.start_link(name: :example_name)
+end
+```
+
+```elixir
+ExUnit.start(auto_run: false)
+
+defmodule TodoListTest do
+  use ExUnit.Case
+
+  # Robust
+  # Client API
+  test "Behavior Test" do
+    assert {:ok, pid} = TodoList.start_link(name: :behavior)
+
+    assert TodoList.add(pid, "one") == :ok
+    assert TodoList.add(pid, "two") == :ok
+
+    assert TodoList.complete_next(pid) == "one"
+    assert TodoList.complete_next(pid) == "two"
+    assert TodoList.complete_next(pid) == nil
+  end
+
+  # Brittle
+  # Server Callbacks
+  test "Implementation Test" do
+    assert {:ok, pid} = GenServer.start_link(TodoList, name: :implementation)
+
+    assert :ok = GenServer.call(pid, {:add_item, "one"})
+    assert :ok = GenServer.call(pid, {:add_item, "two"})
+
+    assert :sys.get_state(pid) == ["one", "two"]
+
+    assert GenServer.call(pid, :complete_item) == "one"
+    assert :sys.get_state(pid) == ["two"]
+
+    assert GenServer.call(pid, :complete_item) == "two"
+    assert :sys.get_state(pid) == []
+
+    assert GenServer.call(pid, :complete_item) == nil
+    assert :sys.get_state(pid) == []
+  end
+end
+
+ExUnit.run()
+```

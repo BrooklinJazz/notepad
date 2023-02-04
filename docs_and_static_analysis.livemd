@@ -1,0 +1,17 @@
+# Documentation and Static Analysis
+
+## Section
+
+```elixir
+defmodule Math do
+  @spec add(String.t(), String.t()) :: String.t()
+  def add(string1, string2) when is_binary(string1) and is_binary(string2) do
+    string1 <> string2
+  end
+
+  @spec add(integer(), integer()) :: integer()
+  def add(int1, int2) do
+    int1 + int2
+  end
+end
+```

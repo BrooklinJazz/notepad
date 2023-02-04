@@ -1,0 +1,210 @@
+# ExUnit
+
+## Review Questions
+
+* Are there any questions?
+
+<!-- livebook:{"break_markdown":true} -->
+
+* Are there any topics we would like to go over again?
+
+<!-- livebook:{"break_markdown":true} -->
+
+* Are there any questions about previous exercises?
+
+## ExUnit
+
+### Discussion Prompts
+
+* What should we test?
+* What are the benefits of testing?
+* How do we want to handle and test errors?
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Example: Writing a basic test
+
+```elixir
+defmodule Math do
+  def double(integer) do
+    integer * 2
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule MathTest do
+  use ExUnit.Case
+
+  test "double/1 input" do
+    # Example based testing
+    assert Math.double(2) == 4
+    assert Math.double(4) == 8
+  end
+
+  # similarities
+  # pro: highly robust
+  # con: smart
+  # differences
+  # randomization: more performant -> false positives (flakey)
+  # limited set of cases -> less performant -> slower
+  test "randomization" do
+    # 2
+    random_integer = Enum.random(1..100)
+    assert Math.double(random_integer) == random_integer * 2
+  end
+
+  test "include a range of test cases" do
+    Enum.each(1..100, fn integer ->
+      assert Math.double(integer) == integer * 2
+    end)
+  end
+end
+
+ExUnit.run()
+```
+
+### Example: Happy Path vs Edge Cases
+
+<!-- livebook:{"break_markdown":true} -->
+
+```mermaid
+flowchart LR
+input --> double/1 --> output
+i0[2] --> d0[double/1] --> o2[4]
+i1[-2] --> d1[double/1] --> o1[-4]
+```
+
+Edge case
+
+* "2" -> double/1 -> error
+
+```elixir
+
+```
+
+```elixir
+defmodule Math do
+  # Happy Path
+  def double(integer) when is_integer(integer) do
+    integer * 2
+  end
+
+  # Edge Cases
+  def double(integer) when is_integer(integer) and integer < 0 do
+    {:error, :negative_numbers_not_valid}
+  end
+
+  def double(integer) do
+    {:error, :invalid_input}
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule MathTest do
+  use ExUnit.Case
+
+  test "double/1 positive integers" do
+    # Example based testing
+    assert Math.double(2) == 4
+    assert Math.double(4) == 8
+  end
+
+  test "double/1 negative integers" do
+    assert Math.double(-2) == {:error, :negative_numbers_not_valid}
+  end
+
+  test "double/1 string integer" do
+    assert Math.double("2") == {:error, :invalid_input}
+  end
+end
+
+ExUnit.run()
+```
+
+### Exercises
+
+The teacher will provide an explanation of each exercise.
+
+* Any questions about the exercises?
+
+## Git Merging
+
+```mermaid
+flowchart LR
+Branch1[Branch main]
+Branch2[Branch solutions]
+
+Branch1 -- git merge main --> Branch2
+Branch2 -- git merge solutions --> Branch1
+
+style Branch2 fill:lightgreen
+```
+
+1. start on main
+2. git checkout -b exercise (stage and commit)
+3. git push -u origin exercise
+4. make PR
+5. git status (ensure there are no changes)
+6. git checkout main (go back to main an start from step 1)
+
+<!-- livebook:{"break_markdown":true} -->
+
+### High Level Skills
+
+1. Where am I?
+2. Where do I want to go?
+3. How do I get there? (`git merge` `git push` `git checkout` `git add` `git commit` `git pull`)
+
+**Where am I**
+
+* branch? (`git status`)
+* any changes? (unstaged, staged, commits?) If so, what are they? (check the source control tab)
+
+**Where do I want to go**
+
+* Am I trying to commit some changes?
+* Am I satisfied with the current changes? (check the source control tab)
+* Am I trying to commit? Am I trying to make a pull request?
+* Am I trying to get some update?
+
+**I want an update**
+
+1. sync
+2. makes sure you are "clean" and on main
+3. git pull
+
+**Go to exercise branch**
+
+1. make sure you are on main and updated
+2. git checkout branchname
+
+**Update exercise branch**
+
+* maybe don't
+
+1. make sure main is updated
+2. make sure we are on the desired (exercise) branch to update
+3. git merge main
+4. deal with merge conflics if present (check the source control tab) make sure nothing was overrwritten.
+
+* you made I change (10am)
+* I made a change (11am)
+
+My change is later, and therefore more "accurate" so my change wins.
+Your change gets overwritten.
+
+```elixir
+map1 = %{one: 1}
+map2 = %{two: 2}
+
+Map.merge(map1, map2)
+```
+
+```elixir
+map1 = %{one: 1}
+map2 = %{one: 2}
+
+Map.merge(map1, map2)
+```

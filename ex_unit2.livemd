@@ -1,0 +1,160 @@
+# ExUnit Part 2
+
+## Section
+
+```elixir
+defmodule Parent.Child1 do
+  def function1() do
+    "a1"
+  end
+
+  def function2() do
+    "a2"
+  end
+end
+
+defmodule Parent.Child2 do
+  @my_attr "hello"
+
+  def hello do
+    @my_attr
+  end
+
+  def function3() do
+    "b1"
+  end
+
+  def function3() do
+    "b2"
+  end
+end
+
+defmodule MainApplication do
+  import Parent.Child1
+  import Parent.Child2
+
+  def main() do
+    hello()
+  end
+end
+
+MainApplication.main()
+```
+
+```elixir
+
+```
+
+## Web App + Mobile App
+
+```mermaid
+flowchart
+Server --html--> Client
+Server --> LiveViewNative
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+```mermaid
+flowchart
+LiveViewNative --bundle--> Android
+LiveViewNative --bundle--> IOS
+Android --> PS[Play Store]
+IOS --> AS[App Store]
+```
+
+## ExUnit Part 2
+
+```elixir
+defmodule Double do
+  def double(integer) do
+    "something"
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule DoubleTest do
+  use ExUnit.Case
+
+  setup do
+    [key: "value"]
+  end
+
+  test "double/1", %{key: value} do
+    # 3As
+    IO.inspect(value)
+
+    # IO.inspect(info)
+
+    # # Arrange
+    # random_integer = Enum.random(1..10)
+    # # Act
+    # result = Double.double(random_integer)
+    # # Assert
+    # assert result == random_integer * 2
+  end
+
+  # End To End
+end
+
+ExUnit.run()
+```
+
+```elixir
+defmodule Double do
+  def double(list) do
+    Enum.shuffle(list ++ list)
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule DoubleTest do
+  use ExUnit.Case
+
+  @products [
+    1,
+    2,
+    3
+  ]
+
+  test "double/1" do
+    assert Enum.filter(@products, fn product -> product == 1 or product == 2 end) == [1, 2]
+  end
+end
+
+ExUnit.run()
+```
+
+```elixir
+
+```
+
+```elixir
+# {key, value} = [key: "value"]
+
+[key: value] = [key: "1"]
+IO.puts(value)
+
+[name: value] = [name: "2"]
+value
+```
+
+```elixir
+filters = [name: "Laptop"]
+filters[:name]
+```
+
+```elixir
+defmodule Products do
+  def filter(products, {key, value}) do
+    IO.inspect(filters)
+  end
+end
+
+keyword_list = [key: "value"]
+my_products = %{name: "Laptop", category: :tech, price: 100}
+
+Products.filter(my_products, keyword_list)
+```

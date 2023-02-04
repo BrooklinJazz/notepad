@@ -1,0 +1,52 @@
+# Streams
+
+## Lazy Evaluation
+
+```elixir
+stream =
+  1..10
+  |> Stream.map(fn int -> int * 2 end)
+  |> Stream.map(fn int -> int * 2 end)
+  |> Stream.map(fn int -> int * 2 end)
+  |> Stream.map(fn int -> int * 2 end)
+```
+
+```elixir
+Enum.take(stream, 5)
+```
+
+## Generators
+
+```elixir
+Stream.iterate(0, fn
+  acc -> acc + 1
+end)
+|> Enum.take()
+```
+
+```elixir
+3 ** 3
+```
+
+```elixir
+Stream.unfold(1, fn acc ->
+  element = acc ** 2
+  IO.inspect(acc, label: "ACC")
+  IO.inspect(element, label: "EL")
+  {element, acc + 1}
+end)
+|> Enum.take(5)
+
+# acc = 1
+# 1 + 1
+# 2 + 1
+# 3 + 1
+# 4 + 1
+# 5
+
+# 1 ** 2
+# 2 ** 2
+# 3 ** 2
+# 4 ** 2
+# 5 ** 2
+```

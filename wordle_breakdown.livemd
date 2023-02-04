@@ -1,0 +1,258 @@
+# Wordle Breakdown
+
+## Review
+
+### Multi-clause (Anonymous/Named) Functions vs Case
+
+```elixir
+my_function = fn
+  {_} -> "1"
+  [_, _, _] -> "2"
+  _ -> "3"
+end
+
+my_function.([1, 2])
+```
+
+```elixir
+defmodule MyModule do
+  def my_function({_}) do
+    "1"
+  end
+
+  def my_function([_, _, _]) do
+    "2"
+  end
+
+  def my_function(_) do
+    "3"
+  end
+end
+
+MyModule.my_function([2, 3])
+```
+
+```elixir
+input = nil
+
+case input do
+  {_} -> "1"
+  [_, _, _] -> "2"
+  _ -> "3"
+end
+```
+
+```elixir
+input = {1}
+
+map = %{
+  1 => "1",
+  2 => "2",
+  3 => "3"
+}
+
+case input do
+  {_} -> "1"
+  2 -> "2"
+  3 -> "3"
+end
+
+# map[input]
+```
+
+## Wordle Review
+
+```elixir
+## All green
+"aaaaa"
+|> String.split("", trim: true)
+
+# ["a", "a", "a", "a", "a"]
+["a", "a", "a", "a", "a"]
+[:green, :green, :green, :green, :green]
+
+## All grey
+
+# ["b", "b", "b", "b", "b"]
+["a", "a", "a", "a", "a"]
+
+## Green and Grey
+
+# All Yellow
+
+## Green, Grey, and Yellow
+
+## Duplicates
+```
+
+Zip/With Index
+
+```elixir
+index = 2
+collection = [0, 1, 2, 3, 4, 5]
+
+Enum.at(collection, index)
+```
+
+```elixir
+Enum.zip([["a", "a", "a", "a", "a"], ["b", "b", "b", "b", "b"]])
+```
+
+```elixir
+Enum.with_index(["a", "a", "a", "a", "a"])
+|> Enum.map(fn {element, index} ->
+  IO.puts(element)
+  IO.puts(index)
+end)
+```
+
+Green
+
+```elixir
+# ["a", "b", "b", "b", "b"]
+["a", "a", "a", "a", "a"]
+```
+
+Gray
+
+```elixir
+1 in Enum.to_list(1..100_000_000)
+```
+
+```elixir
+"b" in ["a", "a", "a"]
+```
+
+```elixir
+Enum.member?(["a", "a", "a"], "b")
+```
+
+## State
+
+```elixir
+"aaaaa"
+["a", "a", "a", "a", "a"]
+[:green, :green, :green, :green, :green]
+```
+
+```elixir
+# target # guess
+"baaaa" "aaaab"
+["b", "a", "a", "a", "a"] ["x", "a", "a", "a", "b"]
+["b", "a", "a", "a", "a"] ["x", :green, :green, :green, "b"]
+["b", "a", "a", "a", "a"] [:gray, :green, :green, :green, "b"]
+# Duplicates: Bonus
+["b", "a", "a", "a", "a"] [:gray, :green, :green, :green, :yellow]
+
+guess = "aaaab"
+
+guess |> String.split("", trim: true)
+
+
+```
+
+```elixir
+#target #guess
+"aabbb" "xxaaa"
+["a", "a", "b", "b", "b"] ["x", "x", "a", "a", "a"]
+# replace greens
+["a", "a", "b", "b", "b"] ["x", "x", "a", "a", "a"]
+# replace gray
+{["a", "a", "b", "b", "b"], [:gray, :gray, "a", "a", "a"]}
+# replace yellow if in target
+["a", "a", "b", "b", "b"] [:gray, :gray, :yellow, :yellow, :yellow]
+# hold on to two things
+[nil, nil, "b", "b", "b"] [:gray, :gray, :yellow, :yellow, :gray]
+```
+
+```elixir
+target = "aabbb" |> String.split("", trim: true)
+guess = "xaaaa" |> String.split("", trim: true)
+
+zipped_list = Enum.zip([target, guess])
+
+Enum.reduce(zipped_list, {target, guess}, fn {target_char, guess_char}, {target_acc, guess_acc} ->
+  # IO.puts(guess_char)
+  if target_char == guess_char do
+    {List.replace_at(target_acc, 0, :green), guess_acc}
+  else
+    {target_acc, guess_acc}
+  end
+end)
+```
+
+```elixir
+target = "aabbb" |> String.split("", trim: true) |> IO.inspect()
+guess = "xaxaa" |> String.split("", trim: true) |> IO.inspect()
+
+# ["a", "a", "b", "b", "b"] ["x", "a", "x", "a", "a"]
+# # green
+# ["a", nil, "b", "b", "b"] ["x", :green, "x", "a", "a"]
+# # grey
+["a", nil, nil, nil, nil] [:grey, :green, :grey, "a", "a"]
+# # yellow
+# # input -> ["x", "a", "x", "a", "a"] -> output:
+{[nil, nil, nil, nil, nil], [:grey, :green, :grey, :yellow, "a"]}
+
+["a", nil, nil, nil, nil] [:grey, :green, :grey, :yellow, "a"]
+[nil, nil, nil, nil, nil] [:grey, :green, :grey, :yellow, :grey]
+
+# 0   # 1
+["a", "a"]
+
+# What is my current index?
+# How many of me are there in the target list 1
+# What is my order in my list? first -> :yellow, second -> :grey
+# is my order less than the # of elements in the target
+
+
+# # yellow
+# ["a", nil, nil, nil, nil] [:grey, :green, :grey, :yellow, "a"]
+
+
+guess_with_green =
+  Enum.zip([target, guess])
+  |> Enum.map(fn {target_char, guess_char} ->
+    if guess_char == target_char do
+      :green
+    else
+      guess_char
+    end
+  end)
+
+target =
+  Enum.zip([target, guess])
+  |> Enum.map(fn {target_char, guess_char} ->
+    if guess_char == target_char do
+      nil
+    else
+      target_char
+    end
+  end)
+
+# guess_with_green_and_grey =
+#   Enum.map(guess_with_green, fn
+#     :green ->
+#       :green
+
+#     guess_char ->
+#       if guess_char not in target do
+#         :grey
+#       else
+#         guess_char
+#       end
+#   end)
+
+# target =
+#   Enum.map(target, fn
+#     target_char ->
+#       if target_char not in guess_with_green do
+#         nil
+#       else
+#         target_char
+#       end
+#   end)
+
+# IO.inspect(target)
+# IO.inspect(guess_with_green_and_grey)
+```

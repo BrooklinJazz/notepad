@@ -1,0 +1,106 @@
+# ExUnit With Wordle
+
+## Section
+
+```elixir
+defmodule Parent.Bill.Student do
+  def hello do
+    "Bill Says Hello!"
+  end
+end
+
+defmodule Parent.Drew.Student do
+  def hello do
+    "Drew Says Hello!"
+  end
+end
+
+defmodule Child do
+  alias Parent.Drew.Student, as: Drew
+  alias Parent.Bill.Student, as: Bill
+
+  def my_function do
+    hello()
+    # Drew.hello()
+  end
+end
+
+Child.my_function()
+```
+
+```elixir
+defmodule ImportExample do
+  import Parent.Bill.Student
+  import Parent.Drew.Student
+
+  def my_function do
+    hello()
+  end
+end
+
+ImportExample.my_function()
+```
+
+```elixir
+defmodule Parent.Bill.Student do
+  def hello do
+    "Bill Says Hello!"
+  end
+end
+
+defmodule Parent.Drew.Student do
+  def hello do
+    "Drew Says Hello!"
+  end
+end
+
+defmodule Child do
+  alias Parent.Drew.Student, as: Drew
+  alias Parent.Bill.Student, as: Bill
+
+  def hello do
+    Bill.hello()
+    Drew.hello()
+  end
+end
+
+Child.hello()
+```
+
+```elixir
+defmodule Raiser do
+  def error do
+    raise "Error"
+  end
+end
+
+defmodule Caller do
+  def call(function_return_value) do
+    "call"
+  end
+end
+
+raised_error = Raiser.error()
+IO.puts("hello!")
+Caller.call(raised_error)
+```
+
+```elixir
+defmodule Greeter do
+  def hello do
+    "hello"
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule GreeterTest do
+  use ExUnit.Case
+
+  test "" do
+    assert 4 == 5
+  end
+end
+
+ExUnit.run()
+```

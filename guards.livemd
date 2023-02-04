@@ -1,0 +1,56 @@
+# Guards
+
+## Structs
+
+```elixir
+is_keyword_list = fn keyword_list ->
+  Keyword.keyword?(keyword_list)
+end
+
+is_keyword_list.(one: 1, two: 2)
+```
+
+```elixir
+IO.inspect("value", label: "LABEL")
+```
+
+```elixir
+defmodule Blueprint do
+  defstruct foundation: "concrete", doors: "wooden"
+
+  def draw(house) do
+    IO.inspect(house, label: "MY HOUSE")
+  end
+end
+
+# circle back
+
+# Instance
+house1 = %Blueprint{doors: "glass"}
+house2 = %Blueprint{}
+house3 = %Blueprint{}
+
+# Module
+Blueprint.draw(house1)
+Blueprint.draw(house2)
+
+# Map.from_struct(house1)
+
+Map.values(house1)
+```
+
+## Subtracting Strings
+
+```elixir
+"abc"
+"abc"
+
+["a", "b", "c"]
+["a", "b", "c"]
+
+["a", "b", "c"] -- ["a"]
+
+'abc' -- 'a'
+
+[?a, ?b, ?c] -- [?a]
+```

@@ -1,0 +1,105 @@
+# Dates and Time
+
+## Extracting a list of lists
+
+```elixir
+grid = [
+  [1, 2, 3],
+  [2, 3, 4],
+  [4, 5, 6]
+]
+
+[head | _tail] = grid
+
+row = Enum.at(grid, 0)
+cell = Enum.at(row, 2)
+```
+
+```elixir
+grid
+|> Enum.at(0)
+|> Enum.at(0)
+```
+
+```elixir
+list = [1, 2, 3]
+[head | _tail] = list
+head
+```
+
+```elixir
+Enum.at(list, 0)
+```
+
+## Appending Elements To A List
+
+```elixir
+# Prepending
+element = 1
+list = [2, 3]
+[element | list]
+```
+
+```elixir
+## Appending
+element = 3
+list = [1, 2]
+list ++ [element]
+```
+
+```elixir
+large_list = Enum.to_list(1..10_000_000)
+```
+
+```elixir
+[0 | large_list]
+```
+
+```elixir
+large_list ++ [10_000_001]
+```
+
+## Conversion
+
+My machine encounteres an error when comparing DateTime difference in minutes. Report this to Livebook in an issue.
+
+```elixir
+DateTime.diff(~U[2020-01-01 12:00:00Z], ~U[2020-01-01 12:30:00Z], :minutes)
+```
+
+## Time
+
+```elixir
+map = %{key: 1}
+map[:key]
+```
+
+```elixir
+conversions = %{seconds: 1, minutes: 60, hours: 60 * 60, days: 60 * 60 * 24}
+unit = :days
+conversions[unit]
+```
+
+```elixir
+defmodule TimeConverter do
+  # Using a module attribute to share value between functions
+  # We access the value of the key using map[key] notation.
+  # i.e. @conversion[:seconds] -> 1
+  # i.e. @conversion[:hours] -> 60 * 60 -> 3600
+  @conversions %{seconds: 1, minutes: 60, hours: 60 * 60, days: 60 * 60 * 24}
+
+  # Multiply amount by conversion unit to get result.
+  # i.e. 2 :minutes -> 2 * 60 seconds -> 120 seconds
+  def to_seconds(amount, unit) do
+    @conversions[unit] * amount
+  end
+
+  # Divide amount by conversion unit to get result.
+  # i.e. 120 seconds -> 120 / 60 -> 2 minutes
+  def from_seconds(amount, unit) do
+    amount / @conversions[unit]
+  end
+end
+
+TimeConverter.from_seconds(120, :minutes)
+```

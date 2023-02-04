@@ -1,0 +1,19 @@
+# Built-in modules
+
+## Section
+
+```elixir
+defmodule ModuleScope do
+  def fill(board) do
+    IO.inspect(board)
+  end
+end
+
+board = [
+  [nil, nil, nil],
+  [nil, nil, nil],
+  [nil, nil, nil]
+]
+
+ModuleScope.fill(board)
+```

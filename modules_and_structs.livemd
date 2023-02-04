@@ -1,0 +1,108 @@
+# Modules & Structs
+
+## Section
+
+```elixir
+DateTime.utc_now()
+```
+
+```elixir
+defmodule Now do
+  @date_time DateTime.utc_now()
+
+  def my_date do
+    DateTime.utc_now()
+  end
+end
+```
+
+```elixir
+Now.my_date()
+```
+
+### Modules vs Functions
+
+```elixir
+defmodule Greeting do
+  def hello do
+    # Only used within the function it's defined in
+    pretty_print = fn value ->
+      IO.puts("=========")
+      IO.inspect(value)
+      IO.puts("=========")
+    end
+
+    pretty_print("Hello")
+  end
+
+  def hi do
+    pretty_print("Hi")
+  end
+
+  # publicly available
+  # use this anywhere in the codebase
+  def pretty_print(value) do
+    IO.puts("=========")
+    IO.inspect(value)
+    IO.puts("=========")
+  end
+
+  # anywhere within the module
+  defp pretty_print(value) do
+    IO.puts("=========")
+    IO.inspect(value)
+    IO.puts("=========")
+  end
+end
+
+Greeting.hi()
+```
+
+## Structs
+
+```elixir
+defmodule Person do
+  defstruct [:name, :favourite_books, :school]
+end
+```
+
+```elixir
+defmodule School do
+  defstruct [:city, :name]
+end
+```
+
+```elixir
+jon = %Person{
+  name: "Jon",
+  favourite_books: ["Tao Te Ching"],
+  school: %School{city: "Guadalajara", name: "Colegio Salesiano"}
+}
+```
+
+```elixir
+%{jon | favourite_books: jon.favourite_books ++ ["A confederacy of dunces"]}
+```
+
+```elixir
+struct = %Person{name: "Jon", age: 20003}
+```
+
+```elixir
+struct = %Person{name: "Jon"}
+```
+
+```elixir
+%{struct | name: "Bill"}
+```
+
+```elixir
+defmodule Name do
+  @enforce_keys [name: "person"]
+  defstruct @enforce_keys
+end
+```
+
+```elixir
+%Name{name: nil}
+```

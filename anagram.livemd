@@ -1,0 +1,117 @@
+# Anagram
+
+## Problem Solving
+
+```elixir
+# Understand the problem
+# I have 2 strings
+# I need to determine if these strings have the same number of the same characters. robed bored
+
+# Input - Output
+# "robed", "bored" -> true
+# "cats", "dogs" -> false
+
+# Five Ideas
+# 1. Break into individual characters and compare chars to eachother. 
+# 2. Check if characters in first string exist in second string. Remove chars in second string if found. if not found, is not anagram.
+# 3. Sort characters in alphabetical order
+# 4. Is there a way to strict match strings without caring about order?
+# 5. Maps? Maybe we can convert this to a map which doesn't care about order.
+
+# A: Understand the problem
+# B: Come up with 5+ Ideas
+# C: Compare and Contrast Pros/Cons
+# D*: Decide which idea to try next
+
+## Identify Edge Cases
+# 1. Double Character Issues ccab vs bacc
+
+## Breaking Down The Problem
+```
+
+```elixir
+# Input Output
+# "robed", "bored" -> true
+
+# will not work
+%{c1: "r", c2: "o", c3: "b"} == %{c1: "b", c2: "o", c3: "r"}
+
+# duplicate key issues using map
+%{a: nil, b: nil, a: nil} == %{b: nil, a: nil, a: nil}
+# fix the issue by tracking how many of a character there are.
+# "baa", "aba"
+%{a: 2, b: 1} == %{b: 1, a: 2}
+
+# sorting
+
+# I: "cab" "bac"
+# O: "abc" "abc"
+```
+
+Solution Ideas
+
+```elixir
+# Sorting
+
+# "cab" "bac"
+# "abc" "abc"
+
+# "cab" "bac"
+# ["c", "a", "b"] ["b", "a", "c"]
+
+# "caba" "bacc"
+["a", "a", "b", "c"] == ["a", "b", "c", "c"]
+```
+
+```elixir
+# Removing
+
+"cab", "bac"
+
+# if not found, is not anagram.
+# ["c", "a", "b"] ["b", "a", "c"]
+# c
+# ["b", "a"]
+# a
+["b"]
+# b
+[]
+
+# when finished looking through first string.
+# if list is empty, then is anagram.
+```
+
+```elixir
+# Example Solving Without Enum!
+
+# check length
+# split
+# remove all characters
+["a", "b", "c"] -- ["b", "a", "c"]
+# if list is empty, is anagram.
+
+input1 = "c"
+input2 = "cc"
+
+same_length = String.length(input1) == String.length(input2)
+
+split_string1 = String.split(input1, "")
+split_string2 = String.split(input2, "")
+
+IO.inspect(split_string1)
+IO.inspect(split_string2)
+
+result1 = split_string1 -- split_string2
+# result2 = split_string2 -- split_string1
+
+result1 == [] and same_length
+```
+
+## Graphemes vs Split vs Codepoints
+
+```elixir
+String.split("abc", "", trim: true)
+String.split("a,b,c", ",")
+String.graphemes("é")
+String.codepoints("é")
+```

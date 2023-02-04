@@ -1,0 +1,157 @@
+# Enumeration
+
+## Section
+
+```elixir
+get_id = & &1.id
+& &1.id
+
+grab_id = fn person_param ->
+  person_param.id
+end
+
+person = %{
+  id: 2,
+  name: "Deltuh"
+}
+
+grab_id.(person)
+
+get_id.(person)
+```
+
+```elixir
+defmodule Person do
+  def get_id(person) do
+    person.id
+  end
+end
+
+Enum.map([person, person, person], fn element -> Person.get_id(element) end)
+```
+
+```elixir
+1..10_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000
+```
+
+```elixir
+
+```
+
+```elixir
+Enum.map([1, 2, 3], fn elem -> IO.inspect(elem) end)
+```
+
+```elixir
+Enum.map(1..10, fn elem -> elem * 2 end)
+```
+
+```elixir
+Enum.filter(1..10, fn elem -> rem(elem, 2) == 0 end)
+```
+
+```elixir
+Enum.reduce(1..10, fn element, accumulator -> element + accumulator end)
+```
+
+```elixir
+1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+```
+
+```elixir
+map = %{existing_key: "value"}
+
+%{map | existing_key: "new value"}
+
+new_map = Map.put(map, :my_key, "my value")
+```
+
+```elixir
+Enum.map(1..10, fn integer ->
+  %{"#{integer}" => integer}
+end)
+```
+
+```mermaid
+flowchart LR
+Collection --> Filter --> List[List with the same # of elements or fewer]
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+```mermaid
+flowchart LR
+Collection --> Map --> List[List with the same # of elements]
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+```mermaid
+flowchart LR
+Collection --> Reduce --> ElixirValue
+```
+
+```elixir
+Enum.reduce(1..10, %{}, fn integer, accumulator -> Map.put(accumulator, "#{integer}", integer) end)
+```
+
+### Fizzbuzz Examples
+
+```elixir
+defmodule FizzBuzz do
+  @doc """
+  FizzBuzz.
+  
+  ## Examples
+  
+    iex> FizzBuzz.run(1..15)
+    [1, 2, "fizz", 4, "buzz", "fizz", 7, 8, "fizz", "buzz", 11, "fizz", 13, 14, "fizzbuzz"]
+  
+    iex> FizzBuzz.run(10..15)
+    ["buzz", 11, "fizz", 13, 14, "fizzbuzz"]
+  """
+  def run(range) do
+    Enum.map(range, fn integer ->
+      case {rem(integer, 3), rem(integer, 5)} do
+        {0, 0} -> "fizzbuzz"
+        {0, _} -> "fizz"
+        {_, 0} -> "buzz"
+        _ -> integer
+      end
+    end)
+  end
+
+  def run(range) do
+    Enum.map(range, fn number ->
+      divisable_by_three = rem(number, 3) == 0
+      divisable_by_five = rem(number, 5) == 0
+
+      case {divisable_by_three, divisable_by_five} do
+        {true, true} -> "fizzbuzz"
+        {true, false} -> "fizz"
+        {false, true} -> "buzz"
+        _ -> "#{number}"
+      end
+    end)
+  end
+
+  def run(range) do
+    Enum.map(range, &number_label/1)
+    # Enum.map(range, fn element -> number_label(element) end)
+  end
+
+  defp number_label(number) do
+    divisable_by_three = rem(number, 3) == 0
+    divisable_by_five = rem(number, 5) == 0
+
+    case {divisable_by_three, divisable_by_five} do
+      {true, true} -> "fizzbuzz"
+      {true, false} -> "fizz"
+      {false, true} -> "buzz"
+      _ -> "#{number}"
+    end
+  end
+end
+
+FizzBuzz.run(1..15)
+```

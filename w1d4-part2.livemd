@@ -3,5 +3,272 @@
 ## Section
 
 ```elixir
+case "argument" do
+  "argument" -> "output"
+end
 
+defmodule ModuleName do
+  def my_function do
+  end
+end
+
+cond do
+  true -> "default"
+end
+
+if true do
+end
+```
+
+```elixir
+Person.test()
+```
+
+```elixir
+defmodule Person do
+  def test do
+    "Test2"
+  end
+end
+```
+
+```elixir
+defmodule Hero do
+  @enforce_keys [:name]
+  defstruct [:name, :secret_identity]
+
+  def my_enforced_keys do
+    @enforce_keys
+  end
+end
+```
+
+```elixir
+Hero.my_enforced_keys()
+```
+
+```elixir
+%Hero{name: "Spider-Man"}
+```
+
+```elixir
+defmodule Person do
+  defstruct [:name, :age]
+
+  def hello do
+    "hello"
+  end
+end
+
+Person.hello()
+
+# %Person{name: "Peter", age: 22}
+```
+
+```elixir
+%Person{name: "Peter", age: 22}
+```
+
+```elixir
+%Person{name: ""}
+```
+
+```elixir
+%Person{name: "", age: 2}
+```
+
+## Control Flow
+
+cond triggers the first condition to return truthy.
+
+```elixir
+guess = :rock
+```
+
+```elixir
+guess = :rock
+
+cond do
+  :rock -> :paper
+  :paper -> :scissors
+end
+```
+
+```elixir
+player1_guess = :rock
+player2_guess = :oops
+
+case {player1_guess, player2_guess} do
+  {:rock, :scissors} -> "Player1"
+  {:paper, :rock} -> "Player1"
+  {:scissors, :paper} -> "Player1"
+  {:rock, :paper} -> "Player2"
+  {:paper, :scissors} -> "Player2"
+  {:scissors, :rock} -> "Player2"
+  {_same, _same} -> "Draw"
+  _ -> "SOMETHING WENT WRONG!"
+end
+```
+
+If there is a draw -> draw
+
+if player2 choice is the choice that beats player1 -> player 2 wins
+
+otherwise player 1 wins
+
+```elixir
+player_choice1 = Enum.random([:rock, :paper, :scissors]) |> IO.inspect(label: "P1")
+player_choice2 = Enum.random([:rock, :paper, :scissors]) |> IO.inspect(label: "P2")
+
+win = fn choise ->
+  choise == :rock && :paper
+  choise == :paper && :scissors
+  choise == :scissors && :rock
+end
+
+cond do
+  player_choice1 == player_choice2 -> "Draw!"
+  win.(player_choice1) == player_choice2 -> "P2 wins! :D"
+  true -> "P1 wins :D"
+end
+```
+
+## Rock Paper Scissors Lizard Spock
+
+```elixir
+defmodule RockPaperScissorsLizardSpock do
+  @moduledoc """
+  Rock Paper Scissors Lizard Spock Game
+  """
+
+  @doc """
+  Returns `true` if the first guess beats the second, and `false` otherwise.
+
+  ## Winning Examples
+
+    iex> RockPaperScissorsLizardSpock.beats?(:rock, :lizard)
+    true
+    iex> RockPaperScissorsLizardSpock.beats?(:spock, :scissors)
+    true
+    iex> RockPaperScissorsLizardSpock.beats?(:scissors, :lizard)
+    true
+    iex> RockPaperScissorsLizardSpock.beats?(:lizard, :paper)
+    true
+    iex> RockPaperScissorsLizardSpock.beats?(:paper, :spock)
+    true
+    iex> RockPaperScissorsLizardSpock.beats?(:spock, :rock)
+    true
+
+  ## Losing Examples
+
+    iex> RockPaperScissorsLizardSpock.beats?(:lizard, :rock)
+    false
+    iex> RockPaperScissorsLizardSpock.beats?(:scissors, :spock)
+    false
+    iex> RockPaperScissorsLizardSpock.beats?(:lizard, :scissors)
+    false
+    iex> RockPaperScissorsLizardSpock.beats?(:paper, :lizard)
+    false
+    iex> RockPaperScissorsLizardSpock.beats?(:spock, :paper)
+    false
+    iex> RockPaperScissorsLizardSpock.beats?(:rock, :spock)
+    false
+  """
+  def beats?(guess1, guess2) do
+    case {guess1, guess2} do
+      # Default Wins
+      {:rock, :scissors} ->
+        true
+
+      {:paper, :rock} ->
+        true
+
+      {:scissors, :paper} ->
+        true
+
+      # Additonal Wins
+      {:rock, :lizard} ->
+        true
+
+      {:spock, :scissors} ->
+        true
+
+      {:scissors, :lizard} ->
+        true
+
+      {:lizard, :paper} ->
+        true
+
+      {:paper, :spock} ->
+        true
+
+      {:spock, :rock} ->
+        true
+
+      _ ->
+        false
+        # # Default Loses
+        # {:rock, :paper} -> false
+        # {:paper, :scissors} -> false
+        # {:scissors, :rock} -> false
+        # # Additional Loses
+        # {:lizard, :rock} -> false
+        # {:scissors, :spock} -> false
+        # {:lizard, :scissors} -> false
+        # {:paper, :lizard} -> false
+        # {:spock, :paper} -> false
+        # {:rock, :spock} -> false
+    end
+  end
+
+  def beats?(guess1, guess2) do
+    [guess1, guess2] in [
+      {:rock, :scissors},
+      {:paper, :rock},
+      {:scissors, :paper},
+      {:rock, :lizard},
+      {:spock, :scissors},
+      {:scissors, :lizard},
+      {:lizard, :paper},
+      {:paper, :spock},
+      {:spock, :rock}
+    ]
+  end
+
+  def beats?(guess1, guess2) do
+    {win1, win2} = winners(guess2)
+    guess1 == win1 or guess1 == win2
+  end
+
+  def winners(guess) do
+    case guess do
+      :rock -> {:paper, :spock}
+      :paper -> {:lizard, :scissors}
+      :scissors -> {:rock, :lizard}
+      :lizard -> {:rock, :scissors}
+      :spock -> {:paper, :lizard}
+    end
+  end
+
+  @doc """
+  Return "Player 1 Wins!", "Player 2 Wins!", or "Draw" depending on which player guess won.
+
+  ## Examples
+
+    iex> RockPaperScissorsLizardSpock.play(:lizard, :rock)
+    "Player 2 Wins!"
+
+    iex> RockPaperScissorsLizardSpock.play(:rock, :lizard)
+    "Player 1 Wins!"
+  """
+  def play(player1, player2) do
+    {win_option1, win_option2} = winners(player1)
+
+    cond do
+      player1 == player2 -> "Draw"
+      player2 == win_option1 or player2 == win_option2 -> "Player 2"
+      true -> "Player 1"
+    end
+  end
+end
 ```

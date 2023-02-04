@@ -1,0 +1,172 @@
+# MapSets and DataStructures
+
+## Section
+
+```elixir
+# order + duplicates
+[1, 2, 3, 4, 5]
+
+# not ordered, only unique
+MapSet.new(1..100)
+```
+
+```elixir
+MapSet.new(1..100) |> MapSet.to_list()
+```
+
+```elixir
+[%{}, {1, 2}]
+```
+
+```elixir
+[one: 1, two: 2]
+[{:one, 1}, {:two, 2}]
+```
+
+```elixir
+mapset = MapSet.new([1, 2, 3])
+```
+
+```elixir
+mapset = MapSet.put(mapset, 4)
+```
+
+```elixir
+MapSet.delete(mapset, 2)
+```
+
+```elixir
+IO.inspect(mapset)
+MapSet.filter(mapset, fn int -> int <= 2 end)
+```
+
+```elixir
+MapSet.member?(MapSet.new([1, 2, 3]), 5)
+```
+
+```elixir
+1 in [1, 2, 3]
+
+Enum.member?([1, 2, 3], 1)
+```
+
+```elixir
+Enum.filter(MapSet.new([1, 2]), fn int -> int == 1 end)
+```
+
+```elixir
+Enum.member?(MapSet.new([1, 2]), 1)
+```
+
+```elixir
+# O(1) Constant
+# pigeon carrying a usb
+# 10gb/s
+
+# O(log n)
+# 10 -> 1
+# 20 -> 2
+# 40 -> 3
+# 80 -> 4
+
+# O(n)
+# 10 -> 10
+# 20 -> 20
+# 40 -> 40
+```
+
+```elixir
+len = 10_000_000
+```
+
+```elixir
+list = Enum.to_list(1..len)
+```
+
+```elixir
+mapset = MapSet.new(1..len)
+```
+
+```elixir
+:timer.tc(fn -> Enum.member?(list, len) end) |> IO.inspect()
+:timer.tc(fn -> MapSet.member?(mapset, len) end)
+```
+
+## Lists Vs Keyword List
+
+```elixir
+# list
+[1, 2, 3, 1, 2, 3]
+```
+
+```elixir
+%{key: "value"}
+```
+
+```elixir
+[key: "value"]
+```
+
+```elixir
+# a list with key value pairs
+[key: "value"]
+```
+
+```elixir
+[{:key, "value"}]
+```
+
+```elixir
+almost_keyword_list = [{:key, "value"}, {:key2, "value"}, 2]
+# syntax sugar
+keyword_list = [2, key1: "value", key2: "value"]
+
+Keyword.keyword?(keyword_list)
+```
+
+```elixir
+[one: 1, one: 1]
+```
+
+```elixir
+large_list = Enum.to_list(1..10_000_000)
+```
+
+```elixir
+:timer.tc(fn -> Enum.at(large_list, 0) end)
+```
+
+```elixir
+
+```
+
+```elixir
+Enum.reduce(1..10000, fn acc, elem ->
+  Map.put(acc, elem, elem)
+end)
+
+%{one: 3, one: 2}
+```
+
+```elixir
+[2, key: "value"]
+```
+
+```elixir
+%{key: "value"}
+map = %{:key => "value"}
+
+map[:key]
+map.key
+```
+
+```elixir
+map = %{%{} => "value", key: "value"}
+
+# map["key"]
+# map.key
+```
+
+```elixir
+
+```

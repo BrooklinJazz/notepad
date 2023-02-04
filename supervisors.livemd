@@ -1,0 +1,76 @@
+# Supervisors
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.7.0"}
+])
+```
+
+## Section
+
+```elixir
+defmodule Bomb do
+  use GenServer
+
+  def start_link(start_arg) do
+    IO.inspect(start_arg, label: "Bomb Started")
+    GenServer.start_link(__MODULE__, "init arg")
+  end
+
+  @impl true
+  def init(init_arg) do
+    # state = opts[:name]
+    IO.inspect(init_arg, label: "INIT")
+    {:ok, nil}
+  end
+end
+```
+
+```elixir
+children = [
+  %{
+    id: :bomb1,
+    start: {Bomb, :start_link, ["start link arg"]}
+  },
+  %{
+    id: :bomb2,
+    start: {Bomb, :start_link, [%{}]}
+  },
+  %{
+    id: :bomb3,
+    start: {Bomb, :start_link, [[name: "Bomb 3"]]}
+  }
+]
+
+{:ok, supervisor} = Supervisor.start_link(children, strategy: :rest_for_one)
+```
+
+```elixir
+children = [
+  {Bomb, ["start_link arg"]},
+  %{
+    id: Bomb,
+    start: {Bomb, :start_link, [["start_link arg"]]}
+  },
+  %{
+    id: :bomb3,
+    start: {Bomb, :start_link, [[name: "Bomb 3"]]}
+  }
+]
+
+{:ok, supervisor} = Supervisor.start_link(children, strategy: :rest_for_one)
+```
+
+```elixir
+Supervisor.which_children(supervisor) |> Enum.reverse()
+```
+
+```elixir
+Kino.Process.sup_tree(supervisor)
+```
+
+```elixir
+pid = :c.pid(0, 272, 0)
+
+Process.exit(pid, :kill)
+```
